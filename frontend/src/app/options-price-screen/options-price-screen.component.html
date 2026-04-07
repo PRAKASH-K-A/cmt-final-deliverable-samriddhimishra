@@ -1,0 +1,79 @@
+<section class="options-price-page">
+  <header class="topbar">
+    <div class="title-wrap">
+      <h2>Options Fair Price Screen</h2>
+      <p class="muted">Live pricing stream with throttled rendering</p>
+    </div>
+
+    <div class="controls">
+      <label for="symbolSelect">Symbol</label>
+      <select
+        id="symbolSelect"
+        [ngModel]="selectedSymbol"
+        (ngModelChange)="onSymbolChange($event)">
+        <option *ngFor="let s of symbols" [ngValue]="s">{{ s }}</option>
+      </select>
+    </div>
+  </header>
+
+  <section class="meta-row">
+    <div class="meta-card">
+      <span class="meta-label">Last update</span>
+      <span class="meta-value">{{ lastUpdateTime ? (lastUpdateTime | date:'yyyy-MM-dd HH:mm:ss.SSS') : 'Awaiting stream...' }}</span>
+    </div>
+    <div class="meta-card">
+      <span class="meta-label">Visible symbols</span>
+      <span class="meta-value">{{ liveRows.length }}</span>
+    </div>
+  </section>
+
+  <section class="grid">
+    <article class="panel chart-panel">
+      <h3>Fair Price Trend ({{ selectedSymbol }})</h3>
+      <svg viewBox="0 0 580 160" class="chart-frame">
+        <polyline
+          *ngIf="chartPath"
+          [attr.points]="chartPath"
+          class="line"></polyline>
+      </svg>
+      <p class="hint" *ngIf="!chartPath">Waiting for enough points to render chart...</p>
+    </article>
+
+    <article class="panel params-panel" *ngIf="selectedSymbolLatest as latest">
+      <h3>Pricing Parameters</h3>
+      <div class="kv"><span>Model</span><strong>{{ latest.parameters.model }}</strong></div>
+      <div class="kv"><span>Option side</span><strong>{{ latest.parameters.optionSide }}</strong></div>
+      <div class="kv"><span>Spot</span><strong>{{ latest.parameters.spot | number:'1.2-4' }}</strong></div>
+      <div class="kv"><span>Strike</span><strong>{{ latest.parameters.strike | number:'1.2-4' }}</strong></div>
+      <div class="kv"><span>Volatility</span><strong>{{ latest.parameters.volatility | percent:'1.2-2' }}</strong></div>
+      <div class="kv"><span>Rate</span><strong>{{ latest.parameters.rate | percent:'1.2-2' }}</strong></div>
+      <div class="kv"><span>TTM (years)</span><strong>{{ latest.parameters.timeToExpiryYears | number:'1.3-4' }}</strong></div>
+    </article>
+
+    <article class="panel table-panel">
+      <h3>Latest Fair Prices</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Fair</th>
+              <th>Bid</th>
+              <th>Ask</th>
+              <th>Update Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of liveRows; trackBy: trackBySymbol">
+              <td>{{ row.symbol }}</td>
+              <td>{{ row.fairPrice | number:'1.2-4' }}</td>
+              <td>{{ row.bid | number:'1.2-4' }}</td>
+              <td>{{ row.ask | number:'1.2-4' }}</td>
+              <td>{{ row.timestamp | date:'HH:mm:ss.SSS' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+</section>

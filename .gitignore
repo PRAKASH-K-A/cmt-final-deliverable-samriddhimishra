@@ -1,0 +1,15 @@
+# Node/Angular dependencies
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+frontend/.angular/
+
+# Logs and temp
+*.log
+*.tmp
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
